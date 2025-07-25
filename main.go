@@ -26,6 +26,12 @@ func main() {
 
 	tasks := []Task{task1, task2}
 
-	fmt.Println("Hello, world!")
-	fmt.Println(tasks)
+	for _, v := range tasks {
+		fmt.Print(stringTodo(v))
+	}
+}
+
+func stringTodo(t Task) string {
+	msg := fmt.Sprintf("\n[ %s ]\n %s \n Priority: %d\n", t.Title, t.Description, t.Priority)
+	return msg
 }
