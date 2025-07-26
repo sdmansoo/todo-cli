@@ -30,23 +30,37 @@ func main() {
 
 	tasks := []Task{task1, task2, task3, task4}
 
-	for i, v := range tasks {
-		fmt.Printf("%d ", i+1)
-		fmt.Print(stringTask(v))
-	}
+	printTaskList(tasks)
 
 	tasks = deleteTask(tasks, 4)
 	fmt.Println("\ndeleting task 4\n ")
 
-	for i, v := range tasks {
-		fmt.Printf("%d ", i+1)
-		fmt.Print(stringTask(v))
-	}
+	printTaskList(tasks)
+
+	fmt.Println("\nMarking task 3 as complete\n ")
+	tasks[2] = markComplete(tasks[2])
+
+	printTaskList(tasks)
 }
 
 func stringTask(t Task) string {
-	msg := fmt.Sprintf("\n[ %s ]\n %s \n Priority: %d\n", t.Title, t.Description, t.Priority)
+	var status string
+	if t.Completed {
+		status = "✅"
+	} else {
+		status = "❌"
+	}
+
+	msg := fmt.Sprintf("[ %s ] %s\n %s \n Priority: %d\n",
+		t.Title, status, t.Description, t.Priority)
 	return msg
+}
+
+func printTaskList(taskList []Task) {
+	for i, v := range taskList {
+		task := stringTask(v)
+		fmt.Printf("%d %s", i+1, task)
+	}
 }
 
 func addTask(title string, description string, priority int) Task {
@@ -55,6 +69,15 @@ func addTask(title string, description string, priority int) Task {
 		Description: description,
 		Completed:   false,
 		Priority:    priority,
+	}
+}
+
+func markComplete(t Task) Task {
+	return Task{
+		Title:       t.Title,
+		Description: t.Description,
+		Completed:   true,
+		Priority:    t.Priority,
 	}
 }
 
