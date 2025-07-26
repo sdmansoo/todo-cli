@@ -9,41 +9,35 @@ type Task struct {
 	Priority    int
 }
 
-func main() {
-	task1 := Task{
-		Title:       "Learn GoLang",
-		Description: "get used to the syntax and features of golang",
-		Completed:   false,
-		Priority:    1,
-	}
-
-	task2 := Task{
-		Title:       "Push code to repo",
-		Description: "archive work history in github",
-		Completed:   true,
-		Priority:    2,
-	}
-
-	task3 := addTask("CRUD", "add create,update,read,delete functions", 2)
-
-	task4 := addTask("Fake", "delete this task", 3)
-
-	tasks := []Task{task1, task2, task3, task4}
-
-	printTaskList(tasks)
-
-	tasks = deleteTask(tasks, 4)
-	fmt.Println("\ndeleting task 4\n ")
-
-	printTaskList(tasks)
-
-	fmt.Println("\nMarking task 3 as complete\n ")
-	tasks[2] = markComplete(tasks[2])
-
-	printTaskList(tasks)
+type TaskList struct {
+	tasks []Task
 }
 
-func stringTask(t Task) string {
+func main() {
+	var taskList = TaskList{}
+
+	taskList.addTask("Learn GoLang", "get used to the syntax and features of golang", 1)
+
+	taskList.addTask("Push code to repo", "archive work history in github", 2)
+
+	taskList.addTask("CRUD", "add create,update,read,delete functions", 2)
+
+	taskList.addTask("Fake", "delete this task", 3)
+
+	taskList.printTaskList()
+
+	taskList.deleteTask(4)
+	fmt.Println("\ndeleting task 4\n ")
+
+	taskList.printTaskList()
+
+	fmt.Println("\nMarking task 3 as complete\n ")
+	taskList.markComplete(3)
+
+	taskList.printTaskList()
+}
+
+func (t *Task) stringTask() string {
 	var status string
 	if t.Completed {
 		status = "✅"
@@ -56,31 +50,22 @@ func stringTask(t Task) string {
 	return msg
 }
 
-func printTaskList(taskList []Task) {
-	for i, v := range taskList {
-		task := stringTask(v)
+func (l *TaskList) printTaskList() {
+	for i, v := range l.tasks {
+		task := v.stringTask()
 		fmt.Printf("%d %s", i+1, task)
 	}
 }
 
-func addTask(title string, description string, priority int) Task {
-	return Task{
-		Title:       title,
-		Description: description,
-		Completed:   false,
-		Priority:    priority,
-	}
+func (l *TaskList) addTask(title string, description string, priority int) {
+	t := Task{title, description, false, priority}
+	l.tasks = append(l.tasks, t)
 }
 
-func markComplete(t Task) Task {
-	return Task{
-		Title:       t.Title,
-		Description: t.Description,
-		Completed:   true,
-		Priority:    t.Priority,
-	}
+func (l *TaskList) markComplete(taskNumber int) {
+	l.tasks[taskNumber-1].Completed = true
 }
 
-func deleteTask(taskList []Task, index int) []Task {
-	return append(taskList[:index-1], taskList[index:]...)
+func (l *TaskList) deleteTask(taskNumber int) {
+	l.tasks = append(l.tasks[:taskNumber-1], l.tasks[taskNumber:]...)
 }
